@@ -1,0 +1,16 @@
+<%- include('includes/start') %>
+
+    <div class="tabs">
+        <% selectedTasks.forEach((task, index) => { %>
+            <div onclick="showContent('<%= index %>')">Feladat <%= index + 1 %></div>
+        <% }); %>
+    </div>
+    <% selectedTasks.forEach((task, index) => { %>
+        <div id="content-<%= index %>" class="content">
+            <h2><%= task.title %></h2>
+            <pre><%= task.content %></pre>
+        </div>
+    <% }); %>
+    <script src="/js/script.js"></script>
+
+<%- include('includes/end') %>

@@ -1,0 +1,43 @@
+.tabs {
+    display: flex;
+    cursor: pointer;
+}
+
+.tabs div {
+    margin: 0 10px;
+    padding: 10px;
+    background-color: #ccc;
+}
+
+.content {
+    display: none;
+    padding: 20px;
+    border-top: 1px solid #ccc;
+}
+
+.active {
+    display: block;
+}
+
+.active-tab {
+    background-color: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+.form {
+    display: flex;
+    height: 40dvh;
+    align-items: center;
+    justify-content: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+#email {
+    width: 150%;
+}
