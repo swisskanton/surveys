@@ -15,6 +15,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', routerHandler)
 
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000')
+app.listen(10000, () => {
+    console.log('Server is running on http://localhost:10000')
 })
