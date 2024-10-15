@@ -1,10 +1,27 @@
 import fs from 'fs'
 
+const ACTIVE_PATH = './data/active.json'
 const DATA_PATH = './data/text_files.json'
 const OUTPUT_JSON = './data/contest.json'
 
-function selectRandomTasks(data) {
-    return data.sort(() => 0.5 - Math.random()).slice(0, 4)
+const selectRandomTasks = (data) => data.sort(() => 0.5 - Math.random()).slice(0, 4)
+
+const getFileContent = (filePath) => {
+    let content = {};
+    try {
+        content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    } catch (err) {
+        console.error('Error reading contest.json:', err);
+    }
+    return content
+}
+
+const updateFileContent = (content) => {
+    try {
+        fs.writeFileSync(ACTIVE_PATH, JSON.stringify(content, null, 4))
+    } catch (err) {
+        console.error('Error reading contest.json:', err);
+    }
 }
 
 export const getIndexPage = (req, res) => {
@@ -17,18 +34,10 @@ export const postEmailSendContent = async (req, res) => {
     const email = req.body.email
     const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'))
     let selectedTasks = selectRandomTasks(data)
-    const isActive = true
+    const isActive = getFileContent(ACTIVE_PATH).active
     if (isActive) {
         // Read existing content or initialize as empty array if the file is empty
-        let usersContests = [];
-        try {
-            usersContests = JSON.parse(fs.readFileSync(OUTPUT_JSON, 'utf8'));
-            if (!Array.isArray(usersContests)) {
-                usersContests = [];
-            }
-        } catch (err) {
-            console.error('Error reading contest.json:', err);
-        }
+        let usersContests = getFileContent(OUTPUT_JSON)
         const user = usersContests.filter(item => item.email == email)
         if (user.length == 0) {
             // Save email and selected task IDs to contest.json
@@ -37,7 +46,7 @@ export const postEmailSendContent = async (req, res) => {
                 selectedTaskIds: selectedTasks.map(task => task.id)
             }
             usersContests.push(outputData)
-            fs.writeFileSync(OUTPUT_JSON, JSON.stringify(usersContests, null, 4))
+            updateFileContent(usersContests)
         } else {
             selectedTasks = data.filter(task => user[0].selectedTaskIds.includes(task.id))
         }
@@ -46,4 +55,23 @@ export const postEmailSendContent = async (req, res) => {
         selectedTasks,
         title: 'Files Content'
     })
+}
+
+export const getContestContent = (req, res) => {
+    let contests = getFileContent(OUTPUT_JSON)
+    res.send(contests)
+}
+
+export const getActivePage = (req, res) => {
+    let isActive = getFileContent(ACTIVE_PATH).active
+    res.render('active', {
+        isActive: isActive,
+        title: 'Activity'
+    })
+}
+
+export const setActivity = (req, res) => {
+    let isActive = !getFileContent(ACTIVE_PATH).active
+    updateFileContent({active: isActive})
+    res.status(301).redirect('/active')
 }

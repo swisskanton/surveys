@@ -1,0 +1,8 @@
+<%- include('includes/start') %>
+    <div class="form">
+        <form action="/active" method="POST">
+            <h3><strong><%= isActive ? 'Active' : 'Not Active' %></strong></h3>
+            <button type="submit">Change Activity</button>
+        </form>
+    </div>
+<%- include('includes/end') %>
