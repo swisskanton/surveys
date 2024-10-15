@@ -16,9 +16,9 @@ const getFileContent = (filePath) => {
     return content
 }
 
-const updateFileContent = (content) => {
+const updateFileContent = (filePath, content) => {
     try {
-        fs.writeFileSync(ACTIVE_PATH, JSON.stringify(content, null, 4))
+        fs.writeFileSync(filePath, JSON.stringify(content, null, 4))
     } catch (err) {
         console.error('Error reading contest.json:', err);
     }
@@ -46,7 +46,7 @@ export const postEmailSendContent = async (req, res) => {
                 selectedTaskIds: selectedTasks.map(task => task.id)
             }
             usersContests.push(outputData)
-            updateFileContent(usersContests)
+            updateFileContent(OUTPUT_JSON, usersContests)
         } else {
             selectedTasks = data.filter(task => user[0].selectedTaskIds.includes(task.id))
         }
@@ -72,6 +72,6 @@ export const getActivePage = (req, res) => {
 
 export const setActivity = (req, res) => {
     let isActive = !getFileContent(ACTIVE_PATH).active
-    updateFileContent({active: isActive})
+    updateFileContent(ACTIVE_PATH, {active: isActive})
     res.status(301).redirect('/active')
 }
